@@ -1,0 +1,43 @@
+---
+import PostCard from 'src/components/PostCard.astro';
+import PostList from 'src/components/PostList.astro';
+import PageLayout from 'src/layouts/PageLayout.astro';
+import { getPostsCollection } from 'src/lib/helpers';
+import { css } from 'src/styled-system/css';
+import { vstack } from 'src/styled-system/patterns';
+
+export const getStaticPaths = async () => {
+  const posts = await getPostsCollection();
+  return posts.map((post) => ({
+    params: {
+      year: post.data.published.toLocaleString('en-CA', { year: 'numeric' }),
+      month: post.data.published.toLocaleString('en-CA', { month: '2-digit' }),
+      day: post.data.published.toLocaleString('en-CA', { day: '2-digit' }),
+    },
+  }));
+};
+
+const { year, month, day } = Astro.params;
+const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+
+const allPosts = await getPostsCollection();
+const posts = allPosts.filter((post) =>
+  post.data.published.getFullYear() === date.getFullYear() &&
+  post.data.published.getMonth() === date.getMonth() &&
+  post.data.published.getDay() === date.getDay()
+);
+
+const title = `Posts on ${date.toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' })}`;
+const description = `Posts published on ${date.toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' })}`;
+---
+
+<PageLayout title={title} description={description}>
+  <div class={vstack({ gap: '8', mx: 'auto', maxW: '4xl' })}>
+    <h1 class={css({ px: '4', fontSize: '3xl', fontWeight: 'semibold', lineHeight: 'tight' })}>
+      {title}
+    </h1>
+    <PostList>
+      {posts.map((post) => <PostCard {post} />)}
+    </PostList>
+  </div>
+</PageLayout>

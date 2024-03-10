@@ -1,0 +1,23 @@
+---
+import { css } from 'src/styled-system/css';
+---
+
+<div
+  class={css({
+    display: 'flex',
+    mt: '24',
+    flexDir: { base: 'column', lg: 'row' },
+    flexWrap: 'wrap',
+    '& > *': {
+      flexBasis: { base: '1', lg: '1/2' },
+    },
+    lg: {
+      '& > :nth-child(odd)': {
+        translate: 'auto',
+        y: '-24',
+      },
+    },
+  })}
+>
+  <slot />
+</div>

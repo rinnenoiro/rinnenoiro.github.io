@@ -1,0 +1,37 @@
+---
+import PostCard from 'src/components/PostCard.astro';
+import PostList from 'src/components/PostList.astro';
+import PageLayout from 'src/layouts/PageLayout.astro';
+import { getPostsCollection } from 'src/lib/helpers';
+import { css } from 'src/styled-system/css';
+import { vstack } from 'src/styled-system/patterns';
+
+export const getStaticPaths = async () => {
+  const posts = await getPostsCollection();
+  return posts.map((post) => ({
+    params: {
+      year: post.data.published.toLocaleString('en-CA', { year: 'numeric' }),
+    },
+  }));
+};
+
+const { year } = Astro.params;
+const date = new Date(parseInt(year));
+
+const allPosts = await getPostsCollection();
+const posts = allPosts.filter((post) => post.data.published.getFullYear() === date.getFullYear());
+
+const title = `Posts from ${date.toLocaleString('en-CA', { month: 'long', year: 'numeric' })}`;
+const description = `Posts published in ${date.toLocaleString('en-CA', { month: 'long', year: 'numeric' })}`;
+---
+
+<PageLayout title={title} description={description}>
+  <div class={vstack({ gap: '8', mx: 'auto', maxW: '4xl' })}>
+    <h1 class={css({ px: '4', fontSize: '3xl', fontWeight: 'semibold', lineHeight: 'tight' })}>
+      {title}
+    </h1>
+    <PostList>
+      {posts.map((post) => <PostCard {post} />)}
+    </PostList>
+  </div>
+</PageLayout>

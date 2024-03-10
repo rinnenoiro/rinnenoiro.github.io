@@ -1,0 +1,52 @@
+---
+import { Image } from 'astro:assets';
+import Date from 'src/components/Date.astro';
+import PageLayout from 'src/layouts/PageLayout.astro';
+import { getCategoryUrl, getPostsCollection, type PublishedPost } from 'src/lib/helpers';
+import { css } from 'src/styled-system/css';
+import { hstack, stack, vstack } from 'src/styled-system/patterns';
+
+export const getStaticPaths = async () => {
+  const posts = await getPostsCollection();
+  return posts.map((post) => ({
+    params: {
+      year: post.data.published.toLocaleString('en-CA', { year: 'numeric' }),
+      month: post.data.published.toLocaleString('en-CA', { month: '2-digit' }),
+      day: post.data.published.toLocaleString('en-CA', { day: '2-digit' }),
+      slug: post.slug,
+    },
+    props: post,
+  }));
+};
+
+type Props = PublishedPost;
+
+const post = Astro.props;
+const { Content } = await post.render();
+---
+
+<PageLayout title={post.data.title} description={post.data.description}>
+  <article class={vstack({ gap: '4', px: '4', maxW: 'lg', mx: 'auto' })}>
+    <header>
+      {
+        post.data.cover && (
+          <div class={stack({ shadow: 'xl', mx: '-4', mt: '-12', translate: 'auto', y: '12', zIndex: '[-1]' })}>
+            <Image src={post.data.cover.src} alt={post.data.cover.alt} />
+          </div>
+        )
+      }
+      <div class={hstack({ gap: '2', pos: 'relative', fontSize: 'sm' })}>
+        <Date date={post.data.published} />
+        {
+          post.data.categories && (
+            <ul class={hstack({ gap: '2' })}>
+              {post.data.categories.map((category) => <li><a href={getCategoryUrl(category)}>#{category.name}</a></li>)}
+            </ul>
+          )
+        }
+      </div>
+      <h1 class={css({ pos: 'relative', fontSize: '3xl', fontStyle: 'italic', fontWeight: 'semibold' })}>{post.data.title}</h1>
+    </header>
+    <Content />
+  </article>
+</PageLayout>

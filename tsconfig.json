@@ -1,0 +1,20 @@
+{
+  "extends": "astro/tsconfigs/strictest",
+  "compilerOptions": {
+    "strictNullChecks": true,
+    "baseUrl": ".",
+    "paths": {
+      "src/*": [
+        "./src/*"
+      ]
+    },
+  },
+  "include": [
+    ".eslintrc.cjs",
+    "astro.config.mjs",
+    "panda.config.ts",
+    "postcss.config.cjs",
+    "src/**/*.astro",
+    "src/**/*.ts",
+  ]
+}

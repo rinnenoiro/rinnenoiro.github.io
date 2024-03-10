@@ -1,0 +1,41 @@
+---
+import PostCard from 'src/components/PostCard.astro';
+import PostList from 'src/components/PostList.astro';
+import PageLayout from 'src/layouts/PageLayout.astro';
+import { getPostsCollection } from 'src/lib/helpers';
+import { css } from 'src/styled-system/css';
+import { vstack } from 'src/styled-system/patterns';
+
+export const getStaticPaths = async () => {
+  const posts = await getPostsCollection();
+  return posts.map((post) =>
+    (post.data.categories ?? []).map(
+      (category) => ({ params: { slug: category.slug }, props: { name: category.name } }),
+    )
+  ).flat();
+};
+
+interface Props {
+  name: string;
+}
+
+const { slug } = Astro.params;
+const { name } = Astro.props;
+
+const allPosts = await getPostsCollection();
+const posts = allPosts.filter((post) => (post.data.categories ?? []).some((c) => c.slug === slug));
+
+const title = `Posts in ${name}`;
+const description = `Posts published in ${name}`;
+---
+
+<PageLayout title={title} description={description}>
+  <div class={vstack({ gap: '8', mx: 'auto', maxW: '4xl' })}>
+    <h1 class={css({ px: '4', fontSize: '3xl', fontWeight: 'semibold', lineHeight: 'tight' })}>
+      {title}
+    </h1>
+    <PostList>
+      {posts.map((post) => <PostCard {post} />)}
+    </PostList>
+  </div>
+</PageLayout>

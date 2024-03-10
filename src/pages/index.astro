@@ -1,0 +1,43 @@
+---
+import PostCard from 'src/components/PostCard.astro';
+import { SITE_DESCRIPTION, SITE_TITLE } from 'src/consts';
+import PageLayout from 'src/layouts/PageLayout.astro';
+import { getPostsCollection } from 'src/lib/helpers';
+import { css } from 'src/styled-system/css';
+import { vstack } from 'src/styled-system/patterns';
+
+const posts = await getPostsCollection();
+---
+
+<PageLayout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+  <div class={vstack({ gap: '8', mx: 'auto', maxW: '4xl' })}>
+    <h1 class={css({ px: '4', fontSize: '3xl', fontWeight: 'semibold', lineHeight: 'tight', lg: { w: '1/2' } })}>
+      <blockquote>
+        What fades away<br />
+        its colour unseen<br />
+        is the flower<br />
+        of the heart<br />
+        of those of this world
+        <footer class={css({ fontWeight: 'normal' })}>—ono no komachi</footer>
+      </blockquote>
+    </h1>
+    <div
+      class={css({
+        display: 'flex',
+        flexDir: { base: 'column', lg: 'row-reverse' },
+        flexWrap: 'wrap',
+        '& > *': {
+          flexBasis: { base: '1', lg: '1/2' },
+        },
+        lg: {
+          '& > :nth-child(odd)': {
+            translate: 'auto',
+            y: '-52',
+          },
+        },
+      })}
+    >
+      {posts.map((post) => <PostCard {post} />)}
+    </div>
+  </div>
+</PageLayout>

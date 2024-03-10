@@ -1,0 +1,68 @@
+---
+import { Image } from 'astro:assets';
+import Date from 'src/components/Date.astro';
+import { getCategoryUrl, getPostUrl, type PublishedPost } from 'src/lib/helpers';
+import { css } from 'src/styled-system/css';
+import { hstack, stack, vstack } from 'src/styled-system/patterns';
+
+interface Props {
+  post: PublishedPost;
+}
+
+const { post } = Astro.props;
+---
+<article class={vstack({ gap: '2', pos: 'relative', p: '4', lineHeight: 'tight' })}>
+  <header class={css(hstack.raw({ gap: '2', justifyContent: 'space-between', fontSize: 'sm' }), post.data.cover && { mx: '2' })}>
+    <Date date={post.data.published} />
+    {
+      post.data.categories && (
+        <ul class={hstack({ gap: '2' })}>
+          {post.data.categories.map((category) => <li><a href={getCategoryUrl(category)}>#{category.name}</a></li>)}
+        </ul>
+      )
+    }
+  </header>
+  <a
+    class={vstack({
+      gap: '2',
+      filter: 'auto',
+      transition: 'common',
+      '&:link': {
+        textDecoration: 'none',
+      },
+      '&:hover': {
+        brightness: '1.05',
+        '& h1::after': {
+          ml: '2',
+          opacity: '[1]',
+        },
+      },
+    })}
+    href={getPostUrl(post)}
+  >
+    {
+      post.data.cover && (
+        <div class={stack({ mx: '2', mt: '-8', shadow: 'xl', translate: 'auto', y: '8', zIndex: '[-1]' })}>
+          <Image src={post.data.cover.src} alt={post.data.cover.alt} />
+        </div>
+      )
+    }
+    <h1
+      class={css({
+        pos: 'relative',
+        fontSize: '3xl',
+        fontStyle: 'italic',
+        '&::after': {
+          pos: 'absolute',
+          content: '"→"',
+          ml: '-2',
+          opacity: '[0]',
+          transition: 'all',
+        },
+      })}
+    >
+      {post.data.title}
+    </h1>
+    <p>{post.data.description}</p>
+  </a>
+</article>
