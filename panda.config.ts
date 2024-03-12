@@ -24,6 +24,12 @@ const globalCss = defineGlobalStyles({
       textDecoration: 'underline',
     },
   },
+  em: {
+    fontStyle: 'italic',
+  },
+  strong: {
+    fontWeight: 'semibold',
+  },
 });
 
 const center = definePattern({
