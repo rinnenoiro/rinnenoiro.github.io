@@ -12,7 +12,7 @@ interface Props {
 const { post } = Astro.props;
 ---
 <article class={vstack({ gap: '2', pos: 'relative', p: '4', lineHeight: 'tight' })}>
-  <header class={css(hstack.raw({ gap: '2', justifyContent: 'space-between', fontSize: 'sm' }), post.data.cover && { mx: '2' })}>
+  <header class={hstack({ gap: '2', justifyContent: 'space-between', fontSize: 'sm' })}>
     <Date date={post.data.published} />
     {
       post.data.categories && (
