@@ -30,7 +30,7 @@ const { Content } = await post.render();
     <header>
       {
         post.data.cover && (
-          <div class={stack({ shadow: 'xl', mx: '-4', mt: '-12', translate: 'auto', y: '12', zIndex: '[-1]' })}>
+          <div class={stack({ mx: '-4', mt: '-11', translate: 'auto', y: '11', zIndex: '[-1]' })}>
             <Image src={post.data.cover.src} alt={post.data.cover.alt} />
           </div>
         )
